@@ -14,7 +14,7 @@ func ParseToMatrix(data [][]string) (matrixoperations.Matrix, error) {
 	for _, row := range data {
 		// Check if all rows have the same length
 		if len(row) != rowLength {
-			return nil, fmt.Errorf("invalid matrixoperations: all rows must have the same length")
+			return nil, fmt.Errorf("failed to parse csv records to matrix: all rows must have the same length")
 		}
 
 		// Parse each row to integers
