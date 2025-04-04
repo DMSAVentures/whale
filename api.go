@@ -38,7 +38,7 @@ func EchoHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, matrix.String())
 }
 
-func InverseHandler(w http.ResponseWriter, r *http.Request) {
+func InvertHandler(w http.ResponseWriter, r *http.Request) {
 	records, err := ParseCSVFromRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

@@ -11,5 +11,9 @@ import (
 
 func main() {
 	http.HandleFunc("/echo", EchoHandler)
+	http.HandleFunc("/invert", InvertHandler)
+	http.HandleFunc("/sum", SumHandler)
+	http.HandleFunc("/multiply", MultiplyHandler)
+	http.HandleFunc("/flatten", FlattenHandler)
 	http.ListenAndServe(":8080", nil)
 }
