@@ -6,29 +6,36 @@ import (
 	"strconv"
 )
 
-func ParseToMatrix(data [][]string) (matrixoperations.Matrix, error) {
-	var matrix matrixoperations.Matrix
+func ParseIntMatrix(data [][]string) (matrixoperations.NumericMatrix, error) {
+	rowLen := len(data[0])
+	matrix := make(matrixoperations.NumericMatrix, len(data))
 
-	rowLength := len(data[0])
-
-	for _, row := range data {
-		// Check if all rows have the same length
-		if len(row) != rowLength {
-			return nil, fmt.Errorf("failed to parse csv records to matrix: all rows must have the same length")
+	for i, row := range data {
+		if len(row) != rowLen {
+			return nil, fmt.Errorf("row %d has inconsistent length", i+1)
 		}
-
-		// Parse each row to integers
-		var intRow []int
-		for _, val := range row {
-			intVal, err := strconv.Atoi(val)
+		intRow := make([]int, rowLen)
+		for j, val := range row {
+			n, err := strconv.Atoi(val)
 			if err != nil {
-				return nil, fmt.Errorf("failed to convert string to int: %w", err)
+				return nil, fmt.Errorf("invalid int at row %d col %d: %w", i+1, j+1, err)
 			}
-			intRow = append(intRow, intVal)
+			intRow[j] = n
 		}
-
-		matrix = append(matrix, intRow)
+		matrix[i] = intRow
 	}
+	return matrix, nil
+}
 
+func ParseStringMatrix(data [][]string) (matrixoperations.AlphanumericMatrix, error) {
+	rowLen := len(data[0])
+	matrix := make(matrixoperations.AlphanumericMatrix, len(data))
+
+	for i, row := range data {
+		if len(row) != rowLen {
+			return nil, fmt.Errorf("row %d has inconsistent length", i+1)
+		}
+		matrix[i] = append([]string(nil), row...)
+	}
 	return matrix, nil
 }

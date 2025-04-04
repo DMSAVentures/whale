@@ -1,6 +1,7 @@
 package main
 
 import (
+	"league/internal/api"
 	"net/http"
 )
 
@@ -10,10 +11,10 @@ import (
 //		curl -F 'file=@/path/matrixoperations.csv' "localhost:8080/echo"
 
 func main() {
-	http.HandleFunc("/echo", EchoHandler)
-	http.HandleFunc("/invert", InvertHandler)
-	http.HandleFunc("/sum", SumHandler)
-	http.HandleFunc("/multiply", MultiplyHandler)
-	http.HandleFunc("/flatten", FlattenHandler)
+	http.HandleFunc("/echo", api.EchoHandler)
+	http.HandleFunc("/invert", api.InvertHandler)
+	http.HandleFunc("/sum", api.SumHandler)
+	http.HandleFunc("/multiply", api.MultiplyHandler)
+	http.HandleFunc("/flatten", api.FlattenHandler)
 	http.ListenAndServe(":8080", nil)
 }

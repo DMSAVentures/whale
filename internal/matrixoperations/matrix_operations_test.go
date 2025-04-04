@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func assertMatrixEqual(t *testing.T, expected, actual Matrix) {
+func assertMatrixEqual(t *testing.T, expected, actual NumericMatrix) {
 	assert.Equal(t, len(expected), len(actual), "Matrices have different number of rows")
 	for i := range expected {
 		assert.Equal(t, len(expected[i]), len(actual[i]), "Matrices have different number of columns in row %d", i)
@@ -18,60 +18,67 @@ func assertMatrixEqual(t *testing.T, expected, actual Matrix) {
 
 func TestInvertMatrix(t *testing.T) {
 	// Test the invertMatrix function
-	matrix := Matrix{
+	matrix := NumericMatrix{
 		{1, 2, 3},
 		{4, 5, 6},
 		{7, 8, 9},
 	}
-	expected := Matrix{
+	expected := NumericMatrix{
 		{1, 4, 7},
 		{2, 5, 8},
 		{3, 6, 9},
 	}
-	inverted := matrix.invertMatrix()
-	assertMatrixEqual(t, expected, inverted)
+	matrix.Invert()
+
+	assertMatrixEqual(t, expected, matrix)
 }
 
 func TestFlattenMatrix(t *testing.T) {
 	// Test the flattenMatrix function
-	matrix := Matrix{
+	matrix := NumericMatrix{
 		{1, 2, 3},
 		{4, 5, 6},
 	}
 	expected := "1,2,3,4,5,6"
-	flat := matrix.flattenMatrix()
+	flat := matrix.Flatten()
+
 	assert.Equal(t, expected, flat)
 }
 
 func TestSumMatrix(t *testing.T) {
 	// Test the sumMatrix function
-	matrix := Matrix{
+	matrix := NumericMatrix{
 		{1, 2, 3},
 		{4, 5, 6},
 	}
 	expected := 21
-	sum := matrix.sumMatrix()
+	sum, err := matrix.Sum()
+
+	assert.NoError(t, err)
 	assert.Equal(t, expected, sum)
 }
 
 func TestMultiplyMatrix(t *testing.T) {
 	// Test the multiplyMatrix function
-	matrix := Matrix{
+	matrix := NumericMatrix{
 		{1, 2, 3},
 		{4, 5, 6},
 	}
 	expected := 720
-	product := matrix.multiplyMatrix()
+	product, err := matrix.Multiply()
+
+	assert.NoError(t, err)
 	assert.Equal(t, expected, product)
 }
 
-func TestStringMatrix(t *testing.T) {
+func TestMatrixToString(t *testing.T) {
 	// Test the String method
-	matrix := Matrix{
+	matrix := NumericMatrix{
 		{1, 2, 3},
 		{4, 5, 6},
 	}
 	expected := "1,2,3\n4,5,6\n"
 	result := matrix.String()
+
 	assert.Equal(t, expected, result)
 }
