@@ -7,11 +7,14 @@ A Go-based HTTP API that processes CSV matrix files and performs basic matrix op
 ## 🚀 Features
 
 - Upload a CSV file containing integers
-- Perform the following matrix operations:
+- Perform the following numeric matrix operations:
    - **Invert**: Transpose the matrix
    - **Sum**: Calculate the sum of all elements (with overflow detection)
    - **Multiply**: Calculate the product of all elements (with overflow detection)
    - **Flatten**: Output a comma-separated list of all elements
+- Perform the following string matrix operations:
+  - **Invert**: Transpose the matrix
+  - **Flatten**: Output a comma-separated list of all elements
 - Well-tested API with table-driven integration tests
 - Graceful handling of invalid or malformed input
 
