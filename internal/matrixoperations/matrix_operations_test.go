@@ -6,17 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func assertMatrixEqual(t *testing.T, expected, actual NumericMatrix) {
-	assert.Equal(t, len(expected), len(actual), "Matrices have different number of rows")
-	for i := range expected {
-		assert.Equal(t, len(expected[i]), len(actual[i]), "Matrices have different number of columns in row %d", i)
-		for j := range expected[i] {
-			assert.Equal(t, expected[i][j], actual[i][j], "Matrices differ at element [%d][%d]", i, j)
-		}
-	}
-}
-
-func TestInvertMatrix(t *testing.T) {
+func TestNumericMatrix_Invert(t *testing.T) {
 	// Test the invertMatrix function
 	matrix := NumericMatrix{
 		{1, 2, 3},
@@ -30,10 +20,16 @@ func TestInvertMatrix(t *testing.T) {
 	}
 	matrix.Invert()
 
-	assertMatrixEqual(t, expected, matrix)
+	assert.Equal(t, len(expected), len(matrix), "Matrices have different number of rows")
+	for i := range expected {
+		assert.Equal(t, len(expected[i]), len(matrix[i]), "Matrices have different number of columns in row %d", i)
+		for j := range expected[i] {
+			assert.Equal(t, expected[i][j], matrix[i][j], "Matrices differ at element [%d][%d]", i, j)
+		}
+	}
 }
 
-func TestFlattenMatrix(t *testing.T) {
+func TestNumericMatrix_Flatten(t *testing.T) {
 	// Test the flattenMatrix function
 	matrix := NumericMatrix{
 		{1, 2, 3},
@@ -45,7 +41,7 @@ func TestFlattenMatrix(t *testing.T) {
 	assert.Equal(t, expected, flat)
 }
 
-func TestSumMatrix(t *testing.T) {
+func TestNumericMatrix_Sum(t *testing.T) {
 	// Test the sumMatrix function
 	matrix := NumericMatrix{
 		{1, 2, 3},
@@ -58,7 +54,7 @@ func TestSumMatrix(t *testing.T) {
 	assert.Equal(t, expected, sum)
 }
 
-func TestMultiplyMatrix(t *testing.T) {
+func TestNumericMatrix_Multiply(t *testing.T) {
 	// Test the multiplyMatrix function
 	matrix := NumericMatrix{
 		{1, 2, 3},
@@ -71,11 +67,84 @@ func TestMultiplyMatrix(t *testing.T) {
 	assert.Equal(t, expected, product)
 }
 
-func TestMatrixToString(t *testing.T) {
+func TestNumericMatrix_String(t *testing.T) {
 	// Test the String method
 	matrix := NumericMatrix{
 		{1, 2, 3},
 		{4, 5, 6},
+	}
+	expected := "1,2,3\n4,5,6\n"
+	result := matrix.String()
+
+	assert.Equal(t, expected, result)
+}
+
+func TestAlphanumericMatrix_Invert(t *testing.T) {
+	// Test the invertMatrix function
+	matrix := AlphanumericMatrix{
+		{"1", "2", "3"},
+		{"4", "5", "6"},
+		{"7", "8", "9"},
+	}
+	expected := AlphanumericMatrix{
+		{"1", "4", "7"},
+		{"2", "5", "8"},
+		{"3", "6", "9"},
+	}
+	matrix.Invert()
+
+	assert.Equal(t, len(expected), len(matrix), "Matrices have different number of rows")
+	for i := range expected {
+		assert.Equal(t, len(expected[i]), len(matrix[i]), "Matrices have different number of columns in row %d", i)
+		for j := range expected[i] {
+			assert.Equal(t, expected[i][j], matrix[i][j], "Matrices differ at element [%d][%d]", i, j)
+		}
+	}
+}
+
+func TestAlphanumericMatrix_Flatten(t *testing.T) {
+	// Test the flattenMatrix function
+	matrix := AlphanumericMatrix{
+		{"1", "2", "3"},
+		{"4", "5", "6"},
+	}
+	expected := "1,2,3,4,5,6"
+	flat := matrix.Flatten()
+
+	assert.Equal(t, expected, flat)
+}
+
+func TestAlphanumericMatrix_Sum(t *testing.T) {
+	// Test the sumMatrix function
+	matrix := AlphanumericMatrix{
+		{"1", "2", "3"},
+		{"4", "5", "6"},
+	}
+
+	sum, err := matrix.Sum()
+
+	assert.ErrorIs(t, err, ErrUnsupportedOperation)
+	assert.Equal(t, 0, sum)
+}
+
+func TestAlphanumericMatrix_Multiply(t *testing.T) {
+	// Test the multiplyMatrix function
+	matrix := AlphanumericMatrix{
+		{"1", "2", "3"},
+		{"4", "5", "6"},
+	}
+
+	product, err := matrix.Multiply()
+
+	assert.ErrorIs(t, err, ErrUnsupportedOperation)
+	assert.Equal(t, 0, product)
+}
+
+func TestAlphanumericMatrix_String(t *testing.T) {
+	// Test the String method
+	matrix := AlphanumericMatrix{
+		{"1", "2", "3"},
+		{"4", "5", "6"},
 	}
 	expected := "1,2,3\n4,5,6\n"
 	result := matrix.String()
