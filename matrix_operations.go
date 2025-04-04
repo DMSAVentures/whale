@@ -18,6 +18,7 @@ func (m Matrix) String() string {
 
 		output = output + strings.Join(strRow, ",") + "\n"
 	}
+
 	return output
 }
 
@@ -30,6 +31,7 @@ func (m Matrix) invertMatrix() Matrix {
 			inverted[i][j] = m[j][i]
 		}
 	}
+
 	return inverted
 }
 
@@ -40,6 +42,7 @@ func (m Matrix) flattenMatrix() string {
 			flat = append(flat, strconv.Itoa(val))
 		}
 	}
+
 	return strings.Join(flat, ",")
 }
 
@@ -50,6 +53,7 @@ func (m Matrix) sumMatrix() int {
 			sum += val
 		}
 	}
+
 	return sum
 }
 
@@ -60,12 +64,22 @@ func (m Matrix) multiplyMatrix() int {
 			product *= val
 		}
 	}
+
 	return product
 }
 
 func ParseToMatrix(data [][]string) (Matrix, error) {
 	var matrix Matrix
+
+	rowLength := len(data[0])
+
 	for _, row := range data {
+		// Check if all rows have the same length
+		if len(row) != rowLength {
+			return nil, fmt.Errorf("invalid matrix: all rows must have the same length")
+		}
+
+		// Parse each row to integers
 		var intRow []int
 		for _, val := range row {
 			intVal, err := strconv.Atoi(val)
@@ -74,7 +88,9 @@ func ParseToMatrix(data [][]string) (Matrix, error) {
 			}
 			intRow = append(intRow, intVal)
 		}
+
 		matrix = append(matrix, intRow)
 	}
+
 	return matrix, nil
 }
