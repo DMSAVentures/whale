@@ -1,6 +1,7 @@
 package matrixoperations
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -80,46 +81,94 @@ func TestNumericMatrix_Flatten(t *testing.T) {
 	}
 }
 
-func TestNumericMatrix_Sum(t *testing.T) {
-	tests := []struct {
-		name     string
-		matrix   NumericMatrix
-		expected int64
-	}{
-		{"Empty matrix", NumericMatrix{}, int64(0)},
-		{"1x1 matrix", NumericMatrix{{42}}, 42},
-		{"Negative values", NumericMatrix{{-1, -2}, {3, 4}}, 4},
-		{"2x3 matrix", NumericMatrix{{1, 2, 3}, {4, 5, 6}}, 21},
-		{"Large 100x100 matrix", largeNumericMatrix, 36862},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			sum, err := tt.matrix.Sum()
-			assert.NoError(t, err)
-			assert.Equal(t, tt.expected, sum)
-		})
-	}
-}
-
 func TestNumericMatrix_Multiply(t *testing.T) {
 	tests := []struct {
 		name     string
 		matrix   NumericMatrix
 		expected int64
+		wantErr  bool
 	}{
-		{"1x1 matrix", NumericMatrix{{7}}, 7},
-		{"2x2 matrix", NumericMatrix{{2, 3}, {4, 5}}, 120},
-		{"Edge values", NumericMatrix{{1, 1}, {1, 1}}, 1},
-		{"3x3 matrix", NumericMatrix{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, 362880},
-		{"Partial large matrix", NumericMatrix{{2, 3, 4, 5, 6}, {1, 1, 1, 1, 1}}, 720},
+		{"1x1 matrix", NumericMatrix{{7}}, 7, false},
+		{"2x2 matrix", NumericMatrix{{2, 3}, {4, 5}}, 120, false},
+		{"Edge values", NumericMatrix{{1, 1}, {1, 1}}, 1, false},
+		{"3x3 matrix", NumericMatrix{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, 362880, false},
+		{"Partial large matrix", NumericMatrix{{2, 3, 4, 5, 6}, {1, 1, 1, 1, 1}}, 720, false},
+		{
+			"Mixed negatives",
+			NumericMatrix{{-1, 2}, {-3, 4}},
+			24, false, // -1 * 2 * -3 * 4 = 24
+		},
+		{
+			"Overflow multiply",
+			NumericMatrix{{math.MaxInt64, 2}},
+			0, true,
+		},
+		{
+			"Standard 7x3 matrix",
+			NumericMatrix{
+				{1, 2, 3}, {4, 5, 6}, {7, 8, 9},
+				{10, 11, 12}, {13, 14, 15},
+				{16, 17, 18}, {19, 20, 21},
+			},
+			0, true, // Product would exceed int64
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			product, err := tt.matrix.Multiply()
-			assert.NoError(t, err)
-			assert.Equal(t, tt.expected, product)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.expected, product)
+			}
+		})
+	}
+}
+
+func TestNumericMatrix_Sum(t *testing.T) {
+	tests := []struct {
+		name     string
+		matrix   NumericMatrix
+		expected int64
+		wantErr  bool
+	}{
+		{"Empty matrix", NumericMatrix{}, 0, false},
+		{"1x1 matrix", NumericMatrix{{42}}, 42, false},
+		{"Negative values", NumericMatrix{{-1, -2}, {3, 4}}, 4, false},
+		{"2x3 matrix", NumericMatrix{{1, 2, 3}, {4, 5, 6}}, 21, false},
+		{"Large 100x100 matrix", largeNumericMatrix, 36862, false},
+		{
+			"Mixed negative and positive",
+			NumericMatrix{{1, -2, 3}, {-4, 5, -6}, {7, -8, 9}},
+			5, false,
+		},
+		{
+			"Overflow sum",
+			NumericMatrix{{math.MaxInt64, 1}},
+			0, true,
+		},
+		{
+			"Standard 7x3 matrix",
+			NumericMatrix{
+				{1, 2, 3}, {4, 5, 6}, {7, 8, 9},
+				{10, 11, 12}, {13, 14, 15},
+				{16, 17, 18}, {19, 20, 21},
+			},
+			231, false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sum, err := tt.matrix.Sum()
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.expected, sum)
+			}
 		})
 	}
 }
