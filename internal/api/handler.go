@@ -11,8 +11,8 @@ type MatrixProcessor interface {
 	String() string
 	Flatten() string
 	Invert()
-	Sum() (int, error)
-	Multiply() (int, error)
+	Sum() (int64, error)
+	Multiply() (int64, error)
 }
 
 // parseMatrix tries to parse [][]string as MatrixProcessor
@@ -33,7 +33,7 @@ func parseMatrix(data [][]string) (MatrixProcessor, error) {
 		return &stringMatrix, nil
 	}
 
-	return nil, fmt.Errorf("unable to parse matrix as int or string")
+	return nil, fmt.Errorf("unable to parse matrix as int type or string type")
 }
 
 func parseCSVFromRequest(r *http.Request) ([][]string, error) {
@@ -114,7 +114,7 @@ func SumHandler(w http.ResponseWriter, r *http.Request) {
 
 	sum, err := matrix.Sum()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("failed to process request: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 
@@ -135,7 +135,7 @@ func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
 
 	product, err := matrix.Multiply()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("failed to process request: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 

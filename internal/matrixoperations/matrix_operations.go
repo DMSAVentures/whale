@@ -2,13 +2,49 @@ package matrixoperations
 
 import (
 	"errors"
+	"math"
 	"strconv"
 	"strings"
 )
 
 var ErrUnsupportedOperation = errors.New("unsupported operation")
+var ErrOverflow = errors.New("integer overflow encountered")
 
 type NumericMatrix [][]int
+
+type AlphanumericMatrix [][]string
+
+func safeMultiply(a, b int64) (int64, error) {
+	if a == 0 || b == 0 {
+		return 0, nil
+	}
+
+	if a == math.MinInt64 || b == math.MinInt64 {
+		// edge case where abs(MinInt64) overflows
+		return 0, ErrOverflow
+	}
+
+	if absInt64(a) > math.MaxInt64/absInt64(b) {
+		return 0, ErrOverflow
+	}
+
+	return a * b, nil
+}
+
+func absInt64(x int64) int64 {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func safeAdd(a, b int64) (int64, error) {
+	if (b > 0 && a > math.MaxInt64-b) ||
+		(b < 0 && a < math.MinInt64-b) {
+		return 0, ErrOverflow
+	}
+	return a + b, nil
+}
 
 func (m *NumericMatrix) String() string {
 	var output string
@@ -26,8 +62,12 @@ func (m *NumericMatrix) String() string {
 
 func (m *NumericMatrix) Invert() {
 	size := len(*m)
-	inverted := make(NumericMatrix, size)
-	for i := 0; i < size; i++ {
+	if size == 0 {
+		return
+	}
+	rowLen := len((*m)[0])
+	inverted := make(NumericMatrix, rowLen)
+	for i := 0; i < rowLen; i++ {
 		inverted[i] = make([]int, size)
 		for j := 0; j < size; j++ {
 			inverted[i][j] = (*m)[j][i]
@@ -48,29 +88,35 @@ func (m *NumericMatrix) Flatten() string {
 	return strings.Join(flat, ",")
 }
 
-func (m *NumericMatrix) Sum() (int, error) {
-	var sum = 0
+func (m *NumericMatrix) Sum() (int64, error) {
+	var sum int64 = 0
 	for _, row := range *m {
 		for _, val := range row {
-			sum += val
+			x, err := safeAdd(int64(sum), int64(val))
+			if err != nil {
+				return 0, err
+			}
+			sum = x
 		}
 	}
 
 	return sum, nil
 }
 
-func (m *NumericMatrix) Multiply() (int, error) {
-	var product = 1
+func (m *NumericMatrix) Multiply() (int64, error) {
+	var product int64 = 1
 	for _, row := range *m {
 		for _, val := range row {
-			product *= val
+			x, err := safeMultiply(product, int64(val))
+			if err != nil {
+				return 0, err
+			}
+			product = x
 		}
 	}
 
 	return product, nil
 }
-
-type AlphanumericMatrix [][]string
 
 func (a *AlphanumericMatrix) String() string {
 	var output string
@@ -99,6 +145,10 @@ func (a *AlphanumericMatrix) Flatten() string {
 
 func (a *AlphanumericMatrix) Invert() {
 	size := len(*a)
+	if size == 0 {
+		return
+	}
+
 	inverted := make(AlphanumericMatrix, size)
 	for i := 0; i < size; i++ {
 		inverted[i] = make([]string, size)
@@ -110,10 +160,10 @@ func (a *AlphanumericMatrix) Invert() {
 	*a = inverted
 }
 
-func (a *AlphanumericMatrix) Sum() (int, error) {
+func (a *AlphanumericMatrix) Sum() (int64, error) {
 	return 0, ErrUnsupportedOperation
 }
 
-func (a *AlphanumericMatrix) Multiply() (int, error) {
+func (a *AlphanumericMatrix) Multiply() (int64, error) {
 	return 0, ErrUnsupportedOperation
 }

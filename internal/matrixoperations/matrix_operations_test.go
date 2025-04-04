@@ -43,6 +43,11 @@ func TestNumericMatrix_Invert(t *testing.T) {
 			NumericMatrix{{42}},
 		},
 		{
+			"2x3 matrix",
+			NumericMatrix{{1, 2, 3}, {4, 5, 6}},
+			NumericMatrix{{1, 4}, {2, 5}, {3, 6}},
+		},
+		{
 			"Empty matrix",
 			NumericMatrix{},
 			NumericMatrix{},
@@ -79,9 +84,9 @@ func TestNumericMatrix_Sum(t *testing.T) {
 	tests := []struct {
 		name     string
 		matrix   NumericMatrix
-		expected int
+		expected int64
 	}{
-		{"Empty matrix", NumericMatrix{}, 0},
+		{"Empty matrix", NumericMatrix{}, int64(0)},
 		{"1x1 matrix", NumericMatrix{{42}}, 42},
 		{"Negative values", NumericMatrix{{-1, -2}, {3, 4}}, 4},
 		{"2x3 matrix", NumericMatrix{{1, 2, 3}, {4, 5, 6}}, 21},
@@ -101,7 +106,7 @@ func TestNumericMatrix_Multiply(t *testing.T) {
 	tests := []struct {
 		name     string
 		matrix   NumericMatrix
-		expected int
+		expected int64
 	}{
 		{"1x1 matrix", NumericMatrix{{7}}, 7},
 		{"2x2 matrix", NumericMatrix{{2, 3}, {4, 5}}, 120},
@@ -191,14 +196,14 @@ func TestAlphanumericMatrix_Sum(t *testing.T) {
 	matrix := AlphanumericMatrix{{"1", "2", "3"}, {"4", "5", "6"}}
 	sum, err := matrix.Sum()
 	assert.ErrorIs(t, err, ErrUnsupportedOperation)
-	assert.Equal(t, 0, sum)
+	assert.Equal(t, int64(0), sum)
 }
 
 func TestAlphanumericMatrix_Multiply(t *testing.T) {
 	matrix := AlphanumericMatrix{{"1", "2", "3"}, {"4", "5", "6"}}
 	product, err := matrix.Multiply()
 	assert.ErrorIs(t, err, ErrUnsupportedOperation)
-	assert.Equal(t, 0, product)
+	assert.Equal(t, int64(0), product)
 }
 
 func TestAlphanumericMatrix_String(t *testing.T) {

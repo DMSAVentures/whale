@@ -1,67 +1,123 @@
-# League Backend Challenge
+# Matrix Operations API
 
-In main.go you will find a basic web server written in GoLang. It accepts a single request _/echo_. Extend the webservice with the ability to perform the following operations
+A Go-based HTTP API that processes CSV matrix files and performs basic matrix operations: **invert**, **sum**, **multiply**, and **flatten**.
 
-Given an uploaded csv file
+---
+
+## 🚀 Features
+
+- Upload a CSV file containing integers
+- Perform the following matrix operations:
+   - **Invert**: Transpose the matrix
+   - **Sum**: Calculate the sum of all elements (with overflow detection)
+   - **Multiply**: Calculate the product of all elements (with overflow detection)
+   - **Flatten**: Output a comma-separated list of all elements
+- Well-tested API with table-driven integration tests
+- Graceful handling of invalid or malformed input
+
+---
+
+## 📦 Project Structure
+
 ```
+.
+├── Dockerfile
+├── docker-compose.yml
+├── main.go                # Starts the HTTP server
+├── internal/
+│   ├── api/               # HTTP handlers
+│   ├── matrixoperations/  # Core matrix logic and safety utils
+│   └── utils/             # CSV parsing utilities
+├── test/                  # API tests
+```
+
+---
+
+## 🔧 Usage
+
+### Run locally
+
+```bash
+go run .
+```
+
+Then test with:
+
+```bash
+curl -F 'file=@test/matrix.csv' http://localhost:8080/invert
+```
+
+### Run with Docker
+
+```bash
+make run
+```
+
+### Run API tests
+
+```bash
+make integration-tests
+```
+
+---
+
+## API Endpoints
+
+| Endpoint     | Description                       | Method |
+|--------------|-----------------------------------|--------|
+| `/invert`    | Transposes the matrix             | `GET`  |
+| `/sum`       | Sums all matrix elements          | `GET`  |
+| `/multiply`  | Multiplies all matrix elements    | `GET`  |
+| `/flatten`   | Flattens matrix into CSV string   | `GET`  |
+
+---
+
+## 📁 Example Matrix (matrix.csv)
+
+```csv
 1,2,3
 4,5,6
 7,8,9
 ```
 
-1. Echo (given)
-    - Return the matrix as a string in matrix format.
-    
-    ```
-    // Expected output
-    1,2,3
-    4,5,6
-    7,8,9
-    ``` 
-2. Invert
-    - Return the matrix as a string in matrix format where the columns and rows are inverted
-    ```
-    // Expected output
-    1,4,7
-    2,5,8
-    3,6,9
-    ``` 
-3. Flatten
-    - Return the matrix as a 1 line string, with values separated by commas.
-    ```
-    // Expected output
-    1,2,3,4,5,6,7,8,9
-    ``` 
-4. Sum
-    - Return the sum of the integers in the matrix
-    ```
-    // Expected output
-    45
-    ``` 
-5. Multiply
-    - Return the product of the integers in the matrix
-    ```
-    // Expected output
-    362880
-    ``` 
+---
 
-The input file to these functions is a matrix, of any dimension where the number of rows are equal to the number of columns (square). Each value is an integer, and there is no header row. matrix.csv is example valid input.  
+## 📋 Example Responses
 
-Run web server
-```
-go run .
+- **Invert**:
+  ```
+  1,4,7
+  2,5,8
+  3,6,9
+  ```
+
+- **Sum**:
+  ```
+  45
+  ```
+
+- **Multiply**:
+  ```
+  362880
+  ```
+
+- **Flatten**:
+  ```
+  1,2,3,4,5,6,7,8,9
+  ```
+
+---
+
+## Unit Testing
+
+```bash
+make test
 ```
 
-Send request
-```
-curl -F 'file=@/path/matrix.csv' "localhost:8080/echo"
-```
+---
 
-## What we're looking for
+## Future Improvements
 
-- The solution runs
-- The solution performs all cases correctly
-- The code is easy to read
-- The code is reasonably documented
-- The code is tested
-- The code is robust and handles invalid input and provides helpful error messages
+- Support for floating-point
+- Health check and `/status` endpoint
+- More detailed validation and error messages
