@@ -1,7 +1,6 @@
-package main
+package matrixoperations
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -22,7 +21,7 @@ func (m Matrix) String() string {
 	return output
 }
 
-func (m Matrix) invertMatrix() Matrix {
+func (m Matrix) Invert() Matrix {
 	size := len(m)
 	inverted := make(Matrix, size)
 	for i := 0; i < size; i++ {
@@ -35,7 +34,7 @@ func (m Matrix) invertMatrix() Matrix {
 	return inverted
 }
 
-func (m Matrix) flattenMatrix() string {
+func (m Matrix) Flatten() string {
 	var flat []string
 	for _, row := range m {
 		for _, val := range row {
@@ -46,7 +45,7 @@ func (m Matrix) flattenMatrix() string {
 	return strings.Join(flat, ",")
 }
 
-func (m Matrix) sumMatrix() int {
+func (m Matrix) Sum() int {
 	var sum = 0
 	for _, row := range m {
 		for _, val := range row {
@@ -57,7 +56,7 @@ func (m Matrix) sumMatrix() int {
 	return sum
 }
 
-func (m Matrix) multiplyMatrix() int {
+func (m Matrix) Multiply() int {
 	var product = 1
 	for _, row := range m {
 		for _, val := range row {
@@ -66,31 +65,4 @@ func (m Matrix) multiplyMatrix() int {
 	}
 
 	return product
-}
-
-func ParseToMatrix(data [][]string) (Matrix, error) {
-	var matrix Matrix
-
-	rowLength := len(data[0])
-
-	for _, row := range data {
-		// Check if all rows have the same length
-		if len(row) != rowLength {
-			return nil, fmt.Errorf("invalid matrix: all rows must have the same length")
-		}
-
-		// Parse each row to integers
-		var intRow []int
-		for _, val := range row {
-			intVal, err := strconv.Atoi(val)
-			if err != nil {
-				return nil, fmt.Errorf("failed to convert string to int: %w", err)
-			}
-			intRow = append(intRow, intVal)
-		}
-
-		matrix = append(matrix, intRow)
-	}
-
-	return matrix, nil
 }

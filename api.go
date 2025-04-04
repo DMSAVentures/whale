@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"league/internal/utils"
 	"net/http"
 )
 
@@ -29,13 +30,13 @@ func EchoHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	matrix, err := ParseToMatrix(records)
+	matrix, err := utils.ParseToMatrix(records)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Fprintln(w, matrix.String())
+	fmt.Fprint(w, matrix.String())
 }
 
 func InvertHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,14 +45,14 @@ func InvertHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	matrix, err := ParseToMatrix(records)
+	matrix, err := utils.ParseToMatrix(records)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	inverted := matrix.invertMatrix()
-	fmt.Fprintln(w, inverted.String())
+	inverted := matrix.Invert()
+	fmt.Fprint(w, inverted.String())
 }
 
 func SumHandler(w http.ResponseWriter, r *http.Request) {
@@ -60,14 +61,14 @@ func SumHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	matrix, err := ParseToMatrix(records)
+	matrix, err := utils.ParseToMatrix(records)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	sum := matrix.sumMatrix()
-	fmt.Fprintln(w, sum)
+	sum := matrix.Sum()
+	fmt.Fprint(w, sum)
 }
 
 func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,14 +77,14 @@ func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	matrix, err := ParseToMatrix(records)
+	matrix, err := utils.ParseToMatrix(records)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	product := matrix.multiplyMatrix()
-	fmt.Fprintln(w, product)
+	product := matrix.Multiply()
+	fmt.Fprint(w, product)
 }
 
 func FlattenHandler(w http.ResponseWriter, r *http.Request) {
@@ -92,12 +93,12 @@ func FlattenHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	matrix, err := ParseToMatrix(records)
+	matrix, err := utils.ParseToMatrix(records)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	flat := matrix.flattenMatrix()
-	fmt.Fprintln(w, flat)
+	flat := matrix.Flatten()
+	fmt.Fprint(w, flat)
 }
