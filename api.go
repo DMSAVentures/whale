@@ -37,3 +37,67 @@ func EchoHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprint(w, matrix.String())
 }
+
+func InverseHandler(w http.ResponseWriter, r *http.Request) {
+	records, err := ParseCSVFromRequest(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	matrix, err := ParseToMatrix(records)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	inverted := matrix.invertMatrix()
+	fmt.Fprint(w, inverted.String())
+}
+
+func SumHandler(w http.ResponseWriter, r *http.Request) {
+	records, err := ParseCSVFromRequest(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	matrix, err := ParseToMatrix(records)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	sum := matrix.sumMatrix()
+	fmt.Fprint(w, sum)
+}
+
+func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
+	records, err := ParseCSVFromRequest(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	matrix, err := ParseToMatrix(records)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	product := matrix.multiplyMatrix()
+	fmt.Fprint(w, product)
+}
+
+func FlattenHandler(w http.ResponseWriter, r *http.Request) {
+	records, err := ParseCSVFromRequest(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	matrix, err := ParseToMatrix(records)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	flat := matrix.flattenMatrix()
+	fmt.Fprint(w, flat)
+}
