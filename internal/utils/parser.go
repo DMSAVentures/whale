@@ -7,6 +7,10 @@ import (
 )
 
 func ParseIntMatrix(data [][]string) (matrixoperations.NumericMatrix, error) {
+	if len(data) == 0 {
+		return matrixoperations.NumericMatrix{}, nil
+	}
+
 	rowLen := len(data[0])
 	matrix := make(matrixoperations.NumericMatrix, len(data))
 
@@ -28,6 +32,10 @@ func ParseIntMatrix(data [][]string) (matrixoperations.NumericMatrix, error) {
 }
 
 func ParseStringMatrix(data [][]string) (matrixoperations.AlphanumericMatrix, error) {
+	if len(data) == 0 {
+		return matrixoperations.AlphanumericMatrix{}, nil
+	}
+
 	rowLen := len(data[0])
 	matrix := make(matrixoperations.AlphanumericMatrix, len(data))
 
