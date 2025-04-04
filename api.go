@@ -35,7 +35,7 @@ func EchoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprint(w, matrix.String())
+	fmt.Fprintln(w, matrix.String())
 }
 
 func InvertHandler(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +51,7 @@ func InvertHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	inverted := matrix.invertMatrix()
-	fmt.Fprint(w, inverted.String())
+	fmt.Fprintln(w, inverted.String())
 }
 
 func SumHandler(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +67,7 @@ func SumHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sum := matrix.sumMatrix()
-	fmt.Fprint(w, sum)
+	fmt.Fprintln(w, sum)
 }
 
 func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
@@ -83,7 +83,7 @@ func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	product := matrix.multiplyMatrix()
-	fmt.Fprint(w, product)
+	fmt.Fprintln(w, product)
 }
 
 func FlattenHandler(w http.ResponseWriter, r *http.Request) {
@@ -99,5 +99,5 @@ func FlattenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	flat := matrix.flattenMatrix()
-	fmt.Fprint(w, flat)
+	fmt.Fprintln(w, flat)
 }
